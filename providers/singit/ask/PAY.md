@@ -21,8 +21,13 @@ ceiling flat for buyers that only sign that scheme.
 - `POST /v1/exa/search`, `/v1/exa/contents` and `/v1/exa/answer` are Exa web
   search, page contents and cited answers.
 
-The live service also offers Anthropic Messages, OpenAI Responses, images and
-speech; see https://ask.singitai.app/openapi.json.
+- `POST /v1/messages` and `POST /v1/responses` take Anthropic Messages and OpenAI
+  Responses requests for any listed model.
+- `POST /v1/images/generations` and `POST /v1/audio/speech` are image generation
+  and text to speech; their models are listed at `GET /v1/images/models` and
+  `GET /v1/audio/models`.
+
+The live spec is https://ask.singitai.app/openapi.json.
 
 ## Spend-aware usage
 
