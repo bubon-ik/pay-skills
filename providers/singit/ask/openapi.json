@@ -8629,6 +8629,18 @@
         ]
       }
     },
+    "/v1/images/models": {
+      "get": {
+        "operationId": "listImageModels",
+        "summary": "List image models and their prices",
+        "responses": {
+          "200": {
+            "description": "Model list"
+          }
+        },
+        "security": []
+      }
+    },
     "/v1/audio/speech": {
       "post": {
         "operationId": "createSpeech",
@@ -8956,34 +8968,138 @@
         ]
       }
     },
-    "/v1/models": {
-      "get": {
-        "operationId": "listModels",
-        "summary": "List models that can be asked for now, with prices",
-        "responses": {
-          "200": {
-            "description": "Model list"
-          }
-        },
-        "security": []
-      }
-    },
-    "/v1/images/models": {
-      "get": {
-        "operationId": "listImageModels",
-        "summary": "List image models and their prices",
-        "responses": {
-          "200": {
-            "description": "Model list"
-          }
-        },
-        "security": []
-      }
-    },
     "/v1/audio/models": {
       "get": {
         "operationId": "listAudioModels",
         "summary": "List voice models and their prices",
+        "responses": {
+          "200": {
+            "description": "Model list"
+          }
+        },
+        "security": []
+      }
+    },
+    "/v1/prices": {
+      "get": {
+        "operationId": "listPrices",
+        "summary": "List the crypto, metal and currency symbols offered",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Crypto, metal and currency symbols, with sources"
+          }
+        }
+      }
+    },
+    "/v1/prices/crypto/{symbol}": {
+      "get": {
+        "operationId": "cryptoPrice",
+        "security": [],
+        "summary": "Get a cryptocurrency's USD price from Chainlink on Base",
+        "description": "Read from Chainlink on Base. No payment.",
+        "parameters": [
+          {
+            "name": "symbol",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "examples": [
+                "BTC",
+                "ETH",
+                "SOL"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The price, its time and source"
+          },
+          "404": {
+            "description": "Not offered"
+          },
+          "429": {
+            "description": "Over 60 a minute"
+          }
+        }
+      }
+    },
+    "/v1/prices/metal/{symbol}": {
+      "get": {
+        "operationId": "metalPrice",
+        "security": [],
+        "summary": "Get the USD price of gold (XAU) or silver (XAG)",
+        "description": "Read from Chainlink on Base. No payment.",
+        "parameters": [
+          {
+            "name": "symbol",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "XAU",
+                "XAG"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The price, its time and source"
+          },
+          "404": {
+            "description": "Not offered"
+          }
+        }
+      }
+    },
+    "/v1/prices/fx/{base}/{quote}": {
+      "get": {
+        "operationId": "fxRate",
+        "security": [],
+        "summary": "Get an exchange rate between two of 30 currencies",
+        "description": "From Chainlink on Base, or the ECB's daily rates. No payment.",
+        "parameters": [
+          {
+            "name": "base",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "examples": [
+                "EUR"
+              ]
+            }
+          },
+          {
+            "name": "quote",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "examples": [
+                "USD"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The rate, its date and source"
+          },
+          "404": {
+            "description": "Not offered"
+          }
+        }
+      }
+    },
+    "/v1/models": {
+      "get": {
+        "operationId": "listModels",
+        "summary": "List models that can be asked for now, with prices",
         "responses": {
           "200": {
             "description": "Model list"
@@ -9016,6 +9132,11 @@
         "in": "header",
         "name": "PAYMENT-SIGNATURE",
         "description": "x402 v2 payment. Call without it, read the PAYMENT-REQUIRED header of the 402 response, sign the `upto` or `exact` USDC authorization it offers on Base or Solana for the amount or ceiling it names, and retry with the signature here."
+      },
+      "singitApiKey": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "A SingIt API key (sk_singit_...) from https://app.singitai.app/app/. Only the wallet spend report on app.singitai.app uses it."
       }
     }
   }
